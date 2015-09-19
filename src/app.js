@@ -15,6 +15,7 @@ var lat;
 var lon;
 var cityName = "Unknown";
 var stateAbbr = "Unknown";
+var zipcode = "Unknown";
 
 function getdateEPAFormat() {
   var d = new Date();
@@ -43,16 +44,20 @@ function foundLocation(position) {
           var comptype = data.results[0].address_components[i].types[0];
           if (comptype === "locality") {
             cityName = data.results[0].address_components[i].short_name;
-          } else if (comptype === "administrative_area_level_1")
+          } else if (comptype === "administrative_area_level_1") {
             stateAbbr = data.results[0].address_components[i].short_name;
+          } else if (comptype === "postal_code") {
+            zipcode = data.results[0].address_components[i].short_name;
           }
         }
+      }
   
       // Show to user
       card.subtitle(cityName + ", " + stateAbbr);
       card.body('Loading UV...');
 
-      var UVURL = 'http://iaspub.epa.gov/enviro/efservice/getEnvirofactsUVHOURLY/CITY/' + cityName + '/STATE/' + stateAbbr + '/JSON';
+//      var UVURL = 'http://iaspub.epa.gov/enviro/efservice/getEnvirofactsUVHOURLY/CITY/' + cityName + '/STATE/' + stateAbbr + '/JSON';
+      var UVURL = 'http://iaspub.epa.gov/enviro/efservice/getEnvirofactsUVHOURLY/ZIP/' + zipcode + '/JSON';
       
       // Make the request
       ajax(
@@ -98,6 +103,18 @@ function foundLocation(position) {
 function noLocation() {
 
 }
+
+card.on('click', 'up', function() {
+  console.log('Up clicked!');
+});
+
+card.on('click', 'down', function() {
+  console.log('Down clicked!');
+});
+
+card.on('click', 'select', function() {
+  console.log('Select clicked!');
+});
 
 // http://stackoverflow.com/questions/14638018/current-time-formatting-with-javascript
 function formatDate(date, format, utc){
